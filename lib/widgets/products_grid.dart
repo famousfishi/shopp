@@ -1,17 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shopp/providers/product.dart';
 import 'package:shopp/providers/products.dart';
 import 'package:shopp/widgets/products_item.dart';
 
 // ignore: use_key_in_widget_constructors
 class ProductsGrid extends StatelessWidget {
+  final bool _showFavourites;
+
+  // ignore: prefer_const_constructors_in_immutables, use_key_in_widget_constructors
+  ProductsGrid(this._showFavourites);
   @override
   Widget build(BuildContext context) {
     Products products = Provider.of<Products>(context);
 
+    List<Product> productsData =
+        _showFavourites ? products.favouritesItems : products.items;
+
     return GridView.builder(
         padding: const EdgeInsets.all(10.0),
-        itemCount: products.items.length,
+        itemCount: productsData.length,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             childAspectRatio: 3 / 2,
@@ -19,12 +27,12 @@ class ProductsGrid extends StatelessWidget {
             mainAxisSpacing: 10),
         itemBuilder: (context, index) {
           return ChangeNotifierProvider.value(
-            value: products.items[index],
-            // create: (BuildContext context) => products.items[index],
+            value: productsData[index],
+            // create: (BuildContext context) => productsData[index],
             child: ProductItem(
-                // id: products.items[index].id,
-                // imageUrl: products.items[index].imageUrl,
-                // title: products.items[index].title,
+                // id: productsData[index].id,
+                // imageUrl: productsData[index].imageUrl,
+                // title: productsData[index].title,
                 ),
           );
         });
