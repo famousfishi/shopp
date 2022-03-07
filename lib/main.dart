@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shopp/screens/products_overview_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -10,19 +11,23 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Shopp',
-      theme: ThemeData(primarySwatch: Colors.amber),
-      home: Home(),
+      theme: ThemeData(
+          primarySwatch: Colors.amber,
+          primaryColor: Colors.amber,
+          fontFamily: 'Lato'),
+      home: ProductOverviewScreen(),
       debugShowCheckedModeBanner: false,
     );
   }
 }
 
+// ignore: use_key_in_widget_constructors
 class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Shopp'),
+        title: const Text('Shopp'),
       ),
       body: const Center(
         child: Text('Shopp, a great place'),
