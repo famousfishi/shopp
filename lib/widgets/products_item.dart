@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shopp/screens/products_details_screen.dart';
 
 // ignore: use_key_in_widget_constructors
 class ProductItem extends StatelessWidget {
@@ -22,19 +23,25 @@ class ProductItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: const BorderRadius.all(Radius.circular(10.0)),
-      child: GridTile(
-        child: Image.network(
-          imageUrl,
-          fit: BoxFit.cover,
-        ),
-        footer: GridTileBar(
-          leading: buildIconButton(Icons.favorite, () {}, context),
-          backgroundColor: Colors.black87,
-          title: Text(
-            title,
-            textAlign: TextAlign.center,
+      child: GestureDetector(
+        onTap: () {
+          Navigator.of(context)
+              .pushNamed(ProductDetailsScreen.routeName, arguments: id);
+        },
+        child: GridTile(
+          child: Image.network(
+            imageUrl,
+            fit: BoxFit.cover,
           ),
-          trailing: buildIconButton(Icons.shopping_cart, () {}, context),
+          footer: GridTileBar(
+            leading: buildIconButton(Icons.favorite, () {}, context),
+            backgroundColor: Colors.black87,
+            title: Text(
+              title,
+              textAlign: TextAlign.center,
+            ),
+            trailing: buildIconButton(Icons.shopping_cart, () {}, context),
+          ),
         ),
       ),
     );

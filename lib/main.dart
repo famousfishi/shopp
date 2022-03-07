@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shopp/providers/products.dart';
+import 'package:shopp/screens/products_details_screen.dart';
 import 'package:shopp/screens/products_overview_screen.dart';
 
 void main() {
@@ -9,14 +12,20 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Shopp',
-      theme: ThemeData(
-          primarySwatch: Colors.amber,
-          primaryColor: Colors.amber,
-          fontFamily: 'Lato'),
-      home: ProductOverviewScreen(),
-      debugShowCheckedModeBanner: false,
+    return ChangeNotifierProvider(
+      create: (context) => Products(),
+      child: MaterialApp(
+        title: 'Shopp',
+        theme: ThemeData(
+            primarySwatch: Colors.amber,
+            primaryColor: Colors.amber,
+            fontFamily: 'Lato'),
+        home: ProductOverviewScreen(),
+        debugShowCheckedModeBanner: false,
+        routes: {
+          ProductDetailsScreen.routeName: (context) => ProductDetailsScreen()
+        },
+      ),
     );
   }
 }
