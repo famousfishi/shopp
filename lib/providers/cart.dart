@@ -2,10 +2,25 @@ import 'package:flutter/foundation.dart';
 import 'package:shopp/models/cart_item.dart';
 
 class Cart with ChangeNotifier {
-  final Map<String, CartItem> _items = {};
+  Map<String, CartItem> _items = {};
 
   Map<String, CartItem> get items {
     return {..._items};
+  }
+
+  //count/length of cart items
+  int get cartItemsCount {
+    return _items.length;
+  }
+
+  //totalAmount of cart items
+  double get totalAmount {
+    double total = 0.0;
+    _items.forEach((key, cartItem) {
+      //total = price * quantity
+      total += cartItem.price * cartItem.quantity;
+    });
+    return total;
   }
 
   void addItem(String productId, String title, double price) {
@@ -27,5 +42,17 @@ class Cart with ChangeNotifier {
               quantity: 1,
               price: price));
     }
+    notifyListeners();
+  }
+
+  void removeCartItem(String productId) {
+    _items.remove(productId);
+    notifyListeners();
+  }
+
+  //cleart cart after order has been placed
+  void clearCart() {
+    _items = {};
+    notifyListeners();
   }
 }

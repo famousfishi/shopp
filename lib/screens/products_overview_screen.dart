@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shopp/providers/cart.dart';
+import 'package:shopp/screens/cart_screen.dart';
+import 'package:shopp/widgets/badge.dart';
+import 'package:shopp/widgets/main_drawer.dart';
 import 'package:shopp/widgets/products_grid.dart';
 
 enum FilterOptions {
@@ -30,6 +35,8 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Cart cart = Provider.of<Cart>(context, listen: false);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Products Overview'),
@@ -48,9 +55,20 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
                 }
               });
             },
+          ),
+          Consumer<Cart>(
+            builder: (context, cart, child) => Badge(
+                child: IconButton(
+                  icon: const Icon(Icons.shopping_cart),
+                  onPressed: () {
+                    Navigator.of(context).pushNamed(CartScreen.routeName);
+                  },
+                ),
+                value: cart.cartItemsCount.toString()),
           )
         ],
       ),
+      drawer: MainDrawer(),
       body: ProductsGrid(_showOnlyFavourites),
     );
   }

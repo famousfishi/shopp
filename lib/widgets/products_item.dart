@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shopp/providers/cart.dart';
 import 'package:shopp/providers/product.dart';
 import 'package:shopp/screens/products_details_screen.dart';
 
@@ -23,7 +24,11 @@ class ProductItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //get the product provider
     Product product = Provider.of<Product>(context);
+
+    //get the cart provider
+    Cart cart = Provider.of<Cart>(context, listen: false);
 
     // return Consumer<Product>(
     // builder: (context, product, child) {
@@ -55,7 +60,10 @@ class ProductItem extends StatelessWidget {
               product.title,
               textAlign: TextAlign.center,
             ),
-            trailing: buildIconButton(Icons.shopping_cart, () {}, context),
+            trailing: buildIconButton(Icons.shopping_cart, () {
+              //add item to the cart
+              cart.addItem(product.id, product.title, product.price);
+            }, context),
           ),
         ),
       ),
