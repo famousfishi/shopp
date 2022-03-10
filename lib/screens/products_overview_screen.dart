@@ -39,7 +39,7 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Products Overview'),
+        title: const Text('Retail Shop'),
         actions: [
           PopupMenuButton(
             itemBuilder: (context) {
