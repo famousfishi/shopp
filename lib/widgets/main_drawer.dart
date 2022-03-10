@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shopp/screens/orders_screen.dart';
+import 'package:shopp/screens/user_products_screen.dart';
 
 // ignore: use_key_in_widget_constructors
 class MainDrawer extends StatelessWidget {
@@ -54,6 +55,14 @@ class MainDrawer extends StatelessWidget {
           ),
           buildListTile('Orders', Icons.shopping_cart_rounded, () {
             Navigator.of(context).pushReplacementNamed(OrdersScreen.routeName);
+          }),
+          const Divider(
+            thickness: 2.0,
+            color: Colors.amber,
+          ),
+          buildListTile('Manage Products', Icons.edit, () {
+            Navigator.of(context)
+                .pushReplacementNamed(UserProductsScreen.routeName);
           }),
         ],
       ),
