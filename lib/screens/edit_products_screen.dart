@@ -43,14 +43,10 @@ class _EditProductScreenState extends State<EditProductScreen> {
     //didChangeDependencies called a few moments after the state loads its dependencies and context is available
     // you can use context here
     if (_isInit) {
-      print("Is Initialized:" + _isInit.toString());
       final productId = ModalRoute.of(context)?.settings.arguments;
-      print("Product ID: " + productId.toString());
       if (productId != null) {
         product = Provider.of<Products>(context, listen: false)
             .findById(productId.toString());
-
-        print(product.title);
 
         _initValues = {
           'title': product.title,
@@ -68,7 +64,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
           'imageUrl': '',
           'price': ''
         };
-        print(_initValues);
       }
     }
     _isInit = false;
