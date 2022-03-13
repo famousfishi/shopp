@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class Product with ChangeNotifier {
-  final String id;
+  //chnaged to dynamic as errors with null and string came topping up
+  final dynamic id;
   final String title;
   final String description;
   final double price;
