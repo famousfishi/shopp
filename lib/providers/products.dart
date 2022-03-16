@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:shopp/models/http_exception.dart';
 import 'package:shopp/providers/product.dart';
 import 'package:http/http.dart' as http;
 
@@ -58,7 +59,7 @@ class Products with ChangeNotifier {
   Future<void> addProduct(Product product) async {
     final url = Uri.parse(
         //remove the appended base url to url constants file
-        'https://shopp-fishi-default-rtdb.firebaseio.com/products');
+        'https://shopp-fishi-default-rtdb.firebaseio.com/products.json');
 
     try {
       final response = await http.post(url,
@@ -114,17 +115,54 @@ class Products with ChangeNotifier {
   }
 
 // for updating a product
-  void updateProduct(String id, Product newProduct) {
+  Future<void> updateProduct(String id, Product newProduct) async {
     final productIndex = _items.indexWhere((element) => element.id == id);
     if (productIndex >= 0) {
-      _items[productIndex] = newProduct;
-      notifyListeners();
+      final url = Uri.parse(
+          //remove the appended base url to url constants file
+          'https://shopp-fishi-default-rtdb.firebaseio.com/products/$id.json');
+      try {
+        await http.patch(url,
+            body: json.encode({
+              "title": newProduct.title,
+              "description": newProduct.description,
+              "imageUrl": newProduct.imageUrl,
+              "price": newProduct.price,
+            }));
+        _items[productIndex] = newProduct;
+        notifyListeners();
+      } catch (error) {
+        // ignore: use_rethrow_when_possible
+        throw error;
+      }
     }
   }
 
   //for deleteing a product
-  void deleteProduct(String id) {
-    _items.removeWhere((element) => element.id == id);
+  Future<void> deleteProduct(String id) async {
+    final url = Uri.parse(
+        //remove the appended base url to url constants file
+        'https://shopp-fishi-default-rtdb.firebaseio.com/products/$id.json');
+
+//get the existing product index
+    final existingProductIndex =
+        _items.indexWhere((element) => element.id == id);
+
+    //then get the existing product using the existing product index
+    Product? existingProduct = _items[existingProductIndex];
+
+//utililizing optimistic updating
+    _items.removeAt(existingProductIndex);
     notifyListeners();
+
+    final response = await http.delete(url);
+
+    if (response.statusCode >= 400) {
+      _items.insert(existingProductIndex, existingProduct);
+      notifyListeners();
+
+      throw HttpException('Could not delete product with ID $id');
+    }
+    existingProduct = null;
   }
 }

@@ -33,18 +33,7 @@ class CartScreen extends StatelessWidget {
                           backgroundColor: Theme.of(context).primaryColor,
                           label: Text(
                               '\$${cart.totalAmount.toStringAsFixed(2)}'))),
-                  Consumer<Cart>(
-                    builder: (context, cart, child) => TextButton(
-                        onPressed: () {
-                          Provider.of<Orders>(context, listen: false).addOrder(
-                              cart.items.values.toList(), cart.totalAmount);
-                          cart.clearCart();
-                        },
-                        child: const Text(
-                          'ORDER NOW',
-                          style: TextStyle(color: Colors.black),
-                        )),
-                  )
+                  OrderButton()
                 ],
               ),
             ),
@@ -67,6 +56,41 @@ class CartScreen extends StatelessWidget {
                       })))
         ],
       ),
+    );
+  }
+}
+
+// ignore: use_key_in_widget_constructors
+class OrderButton extends StatefulWidget {
+  @override
+  State<OrderButton> createState() => _OrderButtonState();
+}
+
+class _OrderButtonState extends State<OrderButton> {
+  bool _isLoading = false;
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<Cart>(
+      builder: (context, cart, child) => TextButton(
+          onPressed: (cart.totalAmount <= 0 || _isLoading)
+              ? null
+              : () async {
+                  setState(() {
+                    _isLoading = true;
+                  });
+                  await Provider.of<Orders>(context, listen: false)
+                      .addOrder(cart.items.values.toList(), cart.totalAmount);
+                  setState(() {
+                    _isLoading = false;
+                  });
+                  cart.clearCart();
+                },
+          child: _isLoading
+              ? const CircularProgressIndicator()
+              : const Text(
+                  'ORDER NOW',
+                  style: TextStyle(color: Colors.black),
+                )),
     );
   }
 }
