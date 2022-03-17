@@ -44,7 +44,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     //didChangeDependencies called a few moments after the state loads its dependencies and context is available
     // you can use context here
     if (_isInit) {
-      final productId = ModalRoute.of(context)?.settings.arguments;
+      final productId = ModalRoute.of(context)?.settings.arguments as String?;
       if (productId != null) {
         product = Provider.of<Products>(context, listen: false)
             .findById(productId.toString());

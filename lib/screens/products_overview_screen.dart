@@ -16,6 +16,8 @@ enum FilterOptions {
 
 // ignore: use_key_in_widget_constructors
 class ProductOverviewScreen extends StatefulWidget {
+  static const routeName = '/product-overview';
+
   @override
   State<ProductOverviewScreen> createState() => _ProductOverviewScreenState();
 }

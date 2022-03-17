@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:shopp/providers/cart.dart';
 import 'package:shopp/providers/orders.dart';
 import 'package:shopp/providers/products.dart';
+import 'package:shopp/screens/auth_screen.dart';
 import 'package:shopp/screens/cart_screen.dart';
 import 'package:shopp/screens/edit_products_screen.dart';
 import 'package:shopp/screens/orders_screen.dart';
@@ -37,10 +38,10 @@ class MyApp extends StatelessWidget {
             primaryColor: Colors.amber,
             errorColor: Colors.red,
             fontFamily: 'Lato'),
-        // home: ProductOverviewScreen(),
+        home: AuthScreen(),
         debugShowCheckedModeBanner: false,
         routes: {
-          '/': (context) => ProductOverviewScreen(),
+          ProductOverviewScreen.routeName: (context) => ProductOverviewScreen(),
           ProductDetailsScreen.routeName: (context) => ProductDetailsScreen(),
           CartScreen.routeName: (context) => CartScreen(),
           OrdersScreen.routeName: (context) => OrdersScreen(),

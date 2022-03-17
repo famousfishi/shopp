@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 
 class Product with ChangeNotifier {
   //chnaged to dynamic as errors with null and string came topping up
-  final dynamic id;
+  final String id;
   final String title;
   final String description;
   final double price;
