@@ -139,9 +139,13 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final productId = ModalRoute.of(context)?.settings.arguments as String?;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Edit Product'),
+        title: productId != null
+            ? const Text('Edit Product')
+            : const Text('Add Product'),
         actions: [
           IconButton(onPressed: _saveForm, icon: const Icon(Icons.save))
         ],

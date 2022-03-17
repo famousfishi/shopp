@@ -44,6 +44,10 @@ class Products with ChangeNotifier {
 
   //return a copy of your items using the spread operator
 
+  final String? authToken;
+
+  Products(this.authToken, this._items);
+
   List<Product> get items {
     return [..._items];
   }
@@ -59,7 +63,7 @@ class Products with ChangeNotifier {
   Future<void> addProduct(Product product) async {
     final url = Uri.parse(
         //remove the appended base url to url constants file
-        'https://shopp-fishi-default-rtdb.firebaseio.com/products.json');
+        'https://shopp-fishi-default-rtdb.firebaseio.com/products.json?auth=$authToken');
 
     try {
       final response = await http.post(url,
@@ -92,7 +96,7 @@ class Products with ChangeNotifier {
   Future<void> getProducts() async {
     final url = Uri.parse(
         //remove the appended base url to url constants file
-        'https://shopp-fishi-default-rtdb.firebaseio.com/products.json');
+        'https://shopp-fishi-default-rtdb.firebaseio.com/products.json?auth=$authToken');
     try {
       final response = await http.get(url);
       final List<Product> loadedProducts = [];
@@ -123,7 +127,7 @@ class Products with ChangeNotifier {
     if (productIndex >= 0) {
       final url = Uri.parse(
           //remove the appended base url to url constants file
-          'https://shopp-fishi-default-rtdb.firebaseio.com/products/$id.json');
+          'https://shopp-fishi-default-rtdb.firebaseio.com/products/$id.json?auth=$authToken');
       try {
         await http.patch(url,
             body: json.encode({
@@ -145,7 +149,7 @@ class Products with ChangeNotifier {
   Future<void> deleteProduct(String id) async {
     final url = Uri.parse(
         //remove the appended base url to url constants file
-        'https://shopp-fishi-default-rtdb.firebaseio.com/products/$id.json');
+        'https://shopp-fishi-default-rtdb.firebaseio.com/products/$id.json?auth=$authToken');
 
 //get the existing product index
     final existingProductIndex =

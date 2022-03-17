@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shopp/providers/auth.dart';
 import 'package:shopp/providers/cart.dart';
 import 'package:shopp/providers/orders.dart';
 import 'package:shopp/providers/products.dart';
@@ -20,36 +21,45 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (context) => Products(),
-        ),
-        ChangeNotifierProvider(
-          create: (context) => Cart(),
-        ),
-        ChangeNotifierProvider(
-          create: (context) => Orders(),
-        ),
-      ],
-      child: MaterialApp(
-        title: 'Shopp',
-        theme: ThemeData(
-            primarySwatch: Colors.amber,
-            primaryColor: Colors.amber,
-            errorColor: Colors.red,
-            fontFamily: 'Lato'),
-        home: AuthScreen(),
-        debugShowCheckedModeBanner: false,
-        routes: {
-          ProductOverviewScreen.routeName: (context) => ProductOverviewScreen(),
-          ProductDetailsScreen.routeName: (context) => ProductDetailsScreen(),
-          CartScreen.routeName: (context) => CartScreen(),
-          OrdersScreen.routeName: (context) => OrdersScreen(),
-          UserProductsScreen.routeName: (context) => UserProductsScreen(),
-          EditProductScreen.routeName: (context) => EditProductScreen()
-        },
-      ),
-    );
+        providers: [
+          ChangeNotifierProvider(create: (context) => Auth()),
+          ChangeNotifierProxyProvider<Auth, Products>(
+            create: (context) => Products("", []),
+            update: (context, auth, previousProducts) => Products(auth.token,
+                previousProducts == null ? [] : previousProducts.items),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => Cart(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => Orders(),
+          ),
+        ],
+        //for managing the auth token locally in the App, use consumer around the MaterialAPP
+        child: Consumer<Auth>(
+            builder: (context, authData, _) => MaterialApp(
+                  title: 'Shopp',
+                  theme: ThemeData(
+                      primarySwatch: Colors.amber,
+                      primaryColor: Colors.amber,
+                      errorColor: Colors.red,
+                      fontFamily: 'Lato'),
+                  home:
+                      authData.isAuth ? ProductOverviewScreen() : AuthScreen(),
+                  debugShowCheckedModeBanner: false,
+                  routes: {
+                    // ProductOverviewScreen.routeName: (context) =>
+                    //     ProductOverviewScreen(),
+                    ProductDetailsScreen.routeName: (context) =>
+                        ProductDetailsScreen(),
+                    CartScreen.routeName: (context) => CartScreen(),
+                    OrdersScreen.routeName: (context) => OrdersScreen(),
+                    UserProductsScreen.routeName: (context) =>
+                        UserProductsScreen(),
+                    EditProductScreen.routeName: (context) =>
+                        EditProductScreen()
+                  },
+                )));
   }
 }
 
