@@ -95,6 +95,18 @@ class AuthCard extends StatefulWidget {
 }
 
 class _AuthCardState extends State<AuthCard> {
+  final GlobalKey<FormState> _formKey = GlobalKey();
+  AuthMode _authMode = AuthMode.Login;
+
+  final Map<String, String> _authData = {
+    'email': '',
+    'password': '',
+  };
+
+  bool _isLoading = false;
+
+  final _passwordController = TextEditingController();
+
   void _showErrorDialog(String errorMessage) {
     showDialog(
         context: context,
@@ -112,18 +124,6 @@ class _AuthCardState extends State<AuthCard> {
           );
         });
   }
-
-  final GlobalKey<FormState> _formKey = GlobalKey();
-  AuthMode _authMode = AuthMode.Login;
-
-  final Map<String, String> _authData = {
-    'email': '',
-    'password': '',
-  };
-
-  bool _isLoading = false;
-
-  final _passwordController = TextEditingController();
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) {
@@ -160,7 +160,7 @@ class _AuthCardState extends State<AuthCard> {
       }
       _showErrorDialog(errorMessage);
     } catch (error) {
-      String errorMessage = "Could not authenticate you, please try again";
+      const errorMessage = "Could not authenticate you, please try again";
       _showErrorDialog(errorMessage);
     }
     setState(() {

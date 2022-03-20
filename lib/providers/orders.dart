@@ -13,10 +13,15 @@ class Orders with ChangeNotifier {
     return [..._orders];
   }
 
+  final String? authToken;
+  final String? userId;
+
+  Orders(this.authToken, this.userId, this._orders);
+
   Future<void> fetchOrders() async {
     final url = Uri.parse(
         //remove the appended base url to url constants file
-        'https://shopp-fishi-default-rtdb.firebaseio.com/orders.json');
+        'https://shopp-fishi-default-rtdb.firebaseio.com/orders/$userId.json?auth=$authToken');
 
     final response = await http.get(url);
     final List<OrderItem> loadedOrders = [];
@@ -46,7 +51,7 @@ class Orders with ChangeNotifier {
     final timeStamp = DateTime.now();
     final url = Uri.parse(
         //remove the appended base url to url constants file
-        'https://shopp-fishi-default-rtdb.firebaseio.com/orders.json');
+        'https://shopp-fishi-default-rtdb.firebaseio.com/orders/$userId.json?auth=$authToken');
 
     final response = await http.post(url,
         body: json.encode({

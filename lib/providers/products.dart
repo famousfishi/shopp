@@ -45,8 +45,9 @@ class Products with ChangeNotifier {
   //return a copy of your items using the spread operator
 
   final String? authToken;
+  final String? userId;
 
-  Products(this.authToken, this._items);
+  Products(this.authToken, this.userId, this._items);
 
   List<Product> get items {
     return [..._items];
@@ -72,7 +73,8 @@ class Products with ChangeNotifier {
             "description": product.description,
             "imageUrl": product.imageUrl,
             "price": product.price,
-            "isFavourite": product.isFavourite,
+            "creatorId": userId
+            // "isFavourite": product.isFavourite,
           }));
       final newProduct = Product(
           id: json.decode(response.body)['name'],
@@ -93,10 +95,12 @@ class Products with ChangeNotifier {
   }
 
   //for getting products data from WEB API / firrbase  database (server)
-  Future<void> getProducts() async {
+  Future<void> getProducts([bool filterByUser = false]) async {
+    final filterString =
+        filterByUser ? 'orderBy="creatorId"&equalTo="$userId"' : '';
     final url = Uri.parse(
         //remove the appended base url to url constants file
-        'https://shopp-fishi-default-rtdb.firebaseio.com/products.json?auth=$authToken');
+        'https://shopp-fishi-default-rtdb.firebaseio.com/products.json?auth=$authToken&$filterString');
     try {
       final response = await http.get(url);
       final List<Product> loadedProducts = [];
@@ -104,13 +108,23 @@ class Products with ChangeNotifier {
       if (extractedData == null) {
         return;
       }
+      final favouriteurl = Uri.parse(
+          //remove the appended base url to url constants file
+          'https://shopp-fishi-default-rtdb.firebaseio.com/userFavourites/$userId.json?auth=$authToken');
+
+      final favouriteresponse = await http.get(favouriteurl);
+
+      final favouriteData = json.decode(favouriteresponse.body);
+
       extractedData.forEach((productId, productData) {
         loadedProducts.add(Product(
             id: productId,
             description: productData['description'],
             title: productData['title'],
             imageUrl: productData['imageUrl'],
-            isFavourite: productData['isFavourite'],
+            isFavourite: favouriteData == null
+                ? false
+                : favouriteData[productId] ?? false,
             price: productData['price']));
       });
       _items = loadedProducts;

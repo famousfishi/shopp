@@ -11,6 +11,7 @@ import 'package:shopp/screens/orders_screen.dart';
 import 'package:shopp/screens/products_details_screen.dart';
 import 'package:shopp/screens/products_overview_screen.dart';
 import 'package:shopp/screens/user_products_screen.dart';
+import 'package:shopp/widgets/generic_scaffold.dart';
 
 void main() {
   runApp(MyApp());
@@ -24,15 +25,21 @@ class MyApp extends StatelessWidget {
         providers: [
           ChangeNotifierProvider(create: (context) => Auth()),
           ChangeNotifierProxyProvider<Auth, Products>(
-            create: (context) => Products("", []),
-            update: (context, auth, previousProducts) => Products(auth.token,
+            create: (context) => Products("", "", []),
+            update: (context, auth, previousProducts) => Products(
+                auth.token,
+                auth.userId,
                 previousProducts == null ? [] : previousProducts.items),
           ),
           ChangeNotifierProvider(
             create: (context) => Cart(),
           ),
-          ChangeNotifierProvider(
-            create: (context) => Orders(),
+          ChangeNotifierProxyProvider<Auth, Orders>(
+            create: (context) => Orders("", "", []),
+            update: (context, auth, previousOrders) => Orders(
+                auth.token,
+                auth.userId,
+                previousOrders == null ? [] : previousOrders.orders),
           ),
         ],
         //for managing the auth token locally in the App, use consumer around the MaterialAPP
@@ -44,8 +51,15 @@ class MyApp extends StatelessWidget {
                       primaryColor: Colors.amber,
                       errorColor: Colors.red,
                       fontFamily: 'Lato'),
-                  home:
-                      authData.isAuth ? ProductOverviewScreen() : AuthScreen(),
+                  home: authData.isAuth
+                      ? ProductOverviewScreen()
+                      : FutureBuilder(
+                          future: authData.tryAutoLogin(),
+                          builder: (context, authResultSNapshot) =>
+                              authResultSNapshot.connectionState ==
+                                      ConnectionState.waiting
+                                  ? ScaffoldWidget()
+                                  : AuthScreen()),
                   debugShowCheckedModeBanner: false,
                   routes: {
                     // ProductOverviewScreen.routeName: (context) =>

@@ -25,7 +25,7 @@ class Product with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> toggleFavouriteStatus() async {
+  Future<void> toggleFavouriteStatus(String? token, String? userId) async {
     bool oldStatus = isFavourite;
     isFavourite = !isFavourite;
     notifyListeners();
@@ -33,10 +33,9 @@ class Product with ChangeNotifier {
     try {
       final url = Uri.parse(
           //remove the appended base url to url constants file
-          'https://shopp-fishi-default-rtdb.firebaseio.com/products/$id.json');
+          'https://shopp-fishi-default-rtdb.firebaseio.com/userFavourites/$userId/$id.json?auth=$token');
 
-      final response = await http.patch(url,
-          body: json.encode({'isFavourite': isFavourite}));
+      final response = await http.put(url, body: json.encode(isFavourite));
 
       if (response.statusCode >= 400) {
         setFavouriteStatusValue(oldStatus);

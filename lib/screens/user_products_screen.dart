@@ -10,12 +10,12 @@ class UserProductsScreen extends StatelessWidget {
   static const routeName = '/user-products';
 
   Future<void> refreshProducts(BuildContext context) async {
-    await Provider.of<Products>(context, listen: false).getProducts();
+    await Provider.of<Products>(context, listen: false).getProducts(true);
   }
 
   @override
   Widget build(BuildContext context) {
-    final productsData = Provider.of<Products>(context);
+    // final productsData = Provider.of<Products>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -30,27 +30,35 @@ class UserProductsScreen extends StatelessWidget {
       ),
       drawer: MainDrawer(), //
 
-      body: RefreshIndicator(
-        onRefresh: () => refreshProducts(context),
-        child: Padding(
-          padding: const EdgeInsets.all(10),
-          child: ListView.builder(
-              itemCount: productsData.items.length,
-              itemBuilder: (_, index) {
-                return Column(
-                  children: [
-                    UserProductItem(
-                        id: productsData.items[index].id,
-                        title: productsData.items[index].title,
-                        imageUrl: productsData.items[index].imageUrl),
-                    Divider(
-                      color: Theme.of(context).primaryColor,
-                      thickness: 1.0,
-                    )
-                  ],
-                );
-              }),
-        ),
+      body: FutureBuilder(
+        future: refreshProducts(context),
+        builder: (context, snapshot) => snapshot.connectionState ==
+                ConnectionState.waiting
+            ? const Center(child: CircularProgressIndicator())
+            : RefreshIndicator(
+                onRefresh: () => refreshProducts(context),
+                child: Consumer<Products>(
+                  builder: (context, productsData, _) => Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: ListView.builder(
+                        itemCount: productsData.items.length,
+                        itemBuilder: (_, index) {
+                          return Column(
+                            children: [
+                              UserProductItem(
+                                  id: productsData.items[index].id,
+                                  title: productsData.items[index].title,
+                                  imageUrl: productsData.items[index].imageUrl),
+                              Divider(
+                                color: Theme.of(context).primaryColor,
+                                thickness: 1.0,
+                              )
+                            ],
+                          );
+                        }),
+                  ),
+                ),
+              ),
       ),
     );
   }
